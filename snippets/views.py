@@ -1,5 +1,5 @@
-from .models import Snippet
-from .serializers import SnippetSerializer, UserSerializer
+from .models import Snippet, Province
+from .serializers import SnippetSerializer, UserSerializer, ProvinceSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework import permissions
@@ -16,7 +16,8 @@ from rest_framework import renderers
 def api_root(request, format=None):
     return Response({
         'users': reverse('user-list', request=request, format=format),
-        'snippets': reverse('snippet-list', request=request, format=format)
+        'snippets': reverse('snippet-list', request=request, format=format),
+        'provinces': reverse('province-list', request=request, format=format)
     })
 
 
@@ -46,6 +47,22 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
 
+class ProvinceList(generics.ListCreateAPIView):
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class ProvinceDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()

@@ -38,3 +38,7 @@ class Snippet(models.Model):
         self.highlighted = highlight(self.code, lexer, formatter)
         super(Snippet, self).save(*args, **kwargs)
 
+
+class Province(models.Model):
+    name = models.CharField(max_length=16, verbose_name='省份')
+    owner = models.ForeignKey('auth.User', related_name='省份', on_delete=models.CASCADE)

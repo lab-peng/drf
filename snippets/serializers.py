@@ -1,6 +1,14 @@
 from rest_framework import serializers
-from .models import Snippet
+from .models import Snippet, Province
 from django.contrib.auth.models import User
+
+
+class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Province
+        fields = ['url', 'id', 'name', 'owner']
 
 
 class SnippetSerializer(serializers.HyperlinkedModelSerializer):
